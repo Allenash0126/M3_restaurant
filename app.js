@@ -15,7 +15,6 @@ app.get('/',(req,res) => {
 
 app.get('/restaurants',(req,res) => {
   const keyword = req.query.keyword?.trim()
-  // 篩所有值
   const matchedRestaurants = keyword ? restaurants.filter(rt => 
     Object.values(rt).some((property) => {
       if (typeof property === 'string') {
@@ -24,21 +23,7 @@ app.get('/restaurants',(req,res) => {
       return false
     })    
   ) : restaurants
-
   res.render('index',{ restaurants: matchedRestaurants, keyword })
-
-
-  // 用「或」的寫法 同時篩選：類別＋店名
-  // const matchedRestaurants = restaurants.filter(rt => {
-  //   return rt.name.toLowerCase().includes(keyword.toLowerCase()) || rt.category.toLowerCase().includes(keyword.toLowerCase())
-  // })
-  // res.render('index',{ restaurants: matchedRestaurants, keyword })
-
-  // 只篩店名
-  // const matchedRestaurants = restaurants.filter(rt => {
-  //   return rt.name.toLowerCase().includes(keyword.toLowerCase())
-  // })
-  // res.render('index',{ restaurants: matchedRestaurants, keyword })
 })
 
 app.get('/restaurant/:id',(req,res) => {
