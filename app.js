@@ -14,12 +14,36 @@ app.get('/',(req,res) => {
 })
 
 app.get('/restaurants',(req,res) => {
-  res.render('index',{ restaurants })
+  const keyword = req.query.keyword?.trim()
+  // 篩所有值
+  const matchedRestaurants = keyword ? restaurants.filter(rt => 
+    Object.values(rt).some((property) => {
+      if (typeof property === 'string') {
+      return property.toLowerCase().includes(keyword.toLowerCase())
+      }
+      return false
+    })    
+  ) : restaurants
+
+  res.render('index',{ restaurants: matchedRestaurants, keyword })
+
+
+  // 用「或」的寫法 同時篩選：類別＋店名
+  // const matchedRestaurants = restaurants.filter(rt => {
+  //   return rt.name.toLowerCase().includes(keyword.toLowerCase()) || rt.category.toLowerCase().includes(keyword.toLowerCase())
+  // })
+  // res.render('index',{ restaurants: matchedRestaurants, keyword })
+
+  // 只篩店名
+  // const matchedRestaurants = restaurants.filter(rt => {
+  //   return rt.name.toLowerCase().includes(keyword.toLowerCase())
+  // })
+  // res.render('index',{ restaurants: matchedRestaurants, keyword })
 })
 
 app.get('/restaurant/:id',(req,res) => {
   const id = req.params.id
-  const restaurant = restaurants.find((rt) => {
+  const restaurant = restaurants.find(rt => {
     return rt.id.toString() === id
   })
   res.render('detail',{ restaurant })
